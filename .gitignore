@@ -2,5 +2,6 @@ node_modules/
 build-gerenciador/
 build-player/
 Exe portatil/
+dist/
 npm-install.log
 .agents/
