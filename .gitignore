@@ -1,0 +1,6 @@
+node_modules/
+build-gerenciador/
+build-player/
+Exe portatil/
+npm-install.log
+.agents/

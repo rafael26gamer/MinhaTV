@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MinhaTV Player</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body style="background: #000; overflow: hidden; user-select: none;">
+
+  <!-- Container Principal do Player -->
+  <div class="player-container" id="player-container">
+    
+    <!-- Camada de Exibição A (Crossfade) -->
+    <div id="layer-a" class="player-display-item"></div>
+    
+    <!-- Camada de Exibição B (Crossfade) -->
+    <div id="layer-b" class="player-display-item"></div>
+
+    <!-- Tela de Fallback (Caso não haja mídia ou playlist) -->
+    <div class="player-fallback" id="player-fallback">
+      <div class="fallback-logo"></div>
+      <div class="fallback-text">MinhaTV Portable</div>
+      <div class="fallback-clock" id="fallback-clock">00:00:00</div>
+      <div style="font-size: 13px; color: var(--text-muted); margin-top: 12px;" id="fallback-status">Aguardando configuração de diretório e canal...</div>
+    </div>
+
+    <!-- Widget Informativo Superior (Relógio Digital) -->
+    <div class="widget-overlay" id="widget-overlay">
+      <div class="widget-clock" id="widget-clock">00:00</div>
+      <div class="widget-date" id="widget-date">sábado, 20 de junho</div>
+    </div>
+
+    <!-- Barra de Status Temporária Inferior -->
+    <div class="player-status-bar" id="player-status-bar">
+      <span id="status-bar-text">Sincronizando...</span>
+    </div>
+
+    <!-- Gatilho de Configuração Oculto (Canto Inferior Direito) -->
+    <div class="hidden-trigger" id="hidden-trigger" title="Configurações da Tela">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+        <path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+      </svg>
+    </div>
+
+    <!-- Painel de Configurações Lateral (Fica Oculto por Padrão) -->
+    <div class="player-settings-panel" id="player-settings-panel">
+      <div>
+        <div class="player-settings-header">
+          <h3 class="player-settings-title">Configurações da Tela</h3>
+          <button class="btn-close-panel" id="btn-close-settings">&times;</button>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="player-name-input">Nome desta Tela:</label>
+          <input type="text" id="player-name-input" class="form-input" placeholder="Ex: Recepcao 01">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Pasta Sincronizada:</label>
+          <div style="display: flex; gap: 8px;">
+            <input type="text" id="player-dir-input" class="form-input" style="flex-grow: 1; font-size: 12px;" readonly placeholder="Nenhuma pasta selecionada...">
+            <button id="btn-browse-player" class="btn btn-secondary" style="padding: 12px 16px;">
+              <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="player-channel-select">Canal (Playlist):</label>
+          <select id="player-channel-select" class="form-select" disabled>
+            <option value="">Aguardando conectar pasta...</option>
+          </select>
+        </div>
+
+        <div class="form-group" style="flex-direction: row; align-items: center; gap: 8px; margin-top: 16px; margin-bottom: 8px;">
+          <input type="checkbox" id="chk-show-clock" class="form-checkbox">
+          <label class="form-label" for="chk-show-clock" style="margin: 0; cursor: pointer; font-weight: 600;">Exibir Relógio e Data</label>
+        </div>
+
+        <div class="form-group" style="flex-direction: row; align-items: center; gap: 8px; margin-top: 8px; margin-bottom: 16px;">
+          <input type="checkbox" id="chk-autostart" class="form-checkbox" checked>
+          <label class="form-label" for="chk-autostart" style="margin: 0; cursor: pointer; font-weight: 600;">Iniciar com o Windows</label>
+        </div>
+
+        <div class="glass-panel" style="background: rgba(0,0,0,0.2); padding: 12px; margin-top: 16px; font-size: 12px;">
+          <div style="display:flex; justify-content:space-between; margin-bottom: 6px;">
+            <span>Conexão:</span>
+            <strong id="status-conn" style="color: var(--color-danger);">Desconectado</strong>
+          </div>
+          <div style="display:flex; justify-content:space-between; margin-bottom: 6px;">
+            <span>Última Sinc:</span>
+            <span id="status-sync-time" style="color: var(--text-secondary);">Nunca</span>
+          </div>
+          <div style="display:flex; justify-content:space-between;">
+            <span>Modo:</span>
+            <span id="status-mode" style="color: var(--text-secondary); text-transform: uppercase;">Cache</span>
+          </div>
+        </div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <button id="btn-save-settings" class="btn btn-primary" style="width: 100%;">Salvar e Aplicar</button>
+        <button id="btn-player-devtools" class="btn btn-secondary" style="width: 100%; font-size: 12px;">Depurar (DevTools)</button>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="ui-player.js"></script>
+</body>
+</html>

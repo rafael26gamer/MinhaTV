@@ -1,0 +1,21 @@
+{
+  "appId": "com.minhatv.gerenciador",
+  "productName": "MinhaTV Gerenciador",
+  "directories": {
+    "output": "build-gerenciador"
+  },
+  "files": [
+    "main.js",
+    "preload.js",
+    "package.json",
+    "main/**/*",
+    "src/**/*",
+    "utils/**/*"
+  ],
+  "win": {
+    "target": "portable"
+  },
+  "portable": {
+    "artifactName": "${productName}.${ext}"
+  }
+}

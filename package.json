@@ -1,0 +1,26 @@
+{
+  "name": "minhatv-portable",
+  "version": "1.0.0",
+  "description": "Sinalização digital portátil de custo zero baseada em arquivos via Electron.",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "start:player": "electron . --mode=player",
+    "test": "node --test tests/file-operations.test.js tests/playlist-validator.test.js tests/settings-helper.test.js",
+    "build:gerenciador": "node build.js",
+    "build:player": "node build.js",
+    "build": "node build.js"
+  },
+  "keywords": [
+    "digital-signage",
+    "electron",
+    "portable",
+    "player",
+    "manager"
+  ],
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^30.0.6",
+    "electron-builder": "^26.15.3"
+  }
+}
